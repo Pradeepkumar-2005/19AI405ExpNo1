@@ -1,106 +1,87 @@
-<h1>ExpNo 1: Developing AI Agent with PEAS Description</h1>
-<h3>Name: Pradeep kumar R</h3>
-<h3>Register Number: 212223220077</h3>
+# Implement a Sudoku Solver From Scratch
+## AIM:
+To implement a Sudoku solver using the backtracking algorithm to find the solution for the given Sudoku puzzle.
 
-<h3>AIM:</h3>
-<p>To find the PEAS description for the given AI problem and develop an AI agent.</p>
 
-<h3>Theory</h3>
-<h3>Medicine Prescribing Agent:</h3>
-<p>This agent prescribes medicine for fever (temperature greater than 98.5 degrees), which we consider as unhealthy, based on the user's temperature input. The environment includes rooms in the hospital (two rooms). The agent must consider two factors: one is the room location, and the other is the presence of an unhealthy patient in a random room. The agent must move from one room to another to check and treat the unhealthy person. The performance of the agent is calculated by incrementing performance for each treatment and decrementing it for each movement. Thus, the agent prescribes medicine to unhealthy patients.</p>
+## Steps to solve the Sudoku Puzzle in Python
+<ol>
+  <li>In this method for solving the sudoku puzzle, first, we assign the size of the 2D matrix to a variable M (M*M).</li>
+ <li>Then we assign the utility function (puzzle) to print the grid.</li>
+<li>Later it will assign num to the row and col.</li>
+<li>If we find the same num in the same row or same column or in the specific 3*3 matrix, ‘false’ will be returned.</li>
+<li>Then we will check if we have reached the 8th row and 9th column and return true for stopping further backtracking.</li>
+<li>Next, we will check if the column value becomes 9 then we move to the next row and column.</li>
+<li>Further now we see if the current position of the grid has a value greater than 0, then we iterate for the next column.</li>
+<li>After checking if it is a safe place, we move to the next column and then assign the num in the current (row, col) position of the grid. Later we check for the next possibility with the next column.</li>
+<li>As our assumption was wrong, we discard the assigned num and then we go for the next assumption with a different num value</li>
+</ol>
 
-<hr>
+## PROGRAM:
+```py
+M = 9
+def puzzle(a):
+    for i in range(M):
+        for j in range(M):
+            print(a[i][j],end = " ")
+        print()
+def solve(grid, row, col, num):
+    for x in range(9):
+        if grid[row][x] == num:
+            return False
+             
+    for x in range(9):
+        if grid[x][col] == num:
+            return False
+ 
+ 
+    startRow = row - row % 3
+    startCol = col - col % 3
+    for i in range(3):
+        for j in range(3):
+            if grid[i + startRow][j + startCol] == num:
+                return False
+    return True
+ 
+def Suduko(grid, row, col):
+ 
+    if (row == M - 1 and col == M):
+        return True
+    if col == M:
+        row += 1
+        col = 0
+    if grid[row][col] > 0:
+        return Suduko(grid, row, col + 1)
+    for num in range(1, M + 1, 1): 
+     
+        if solve(grid, row, col, num):
+         
+            grid[row][col] = num
+            if Suduko(grid, row, col + 1):
+                return True
+        grid[row][col] = 0
+    return False
+ 
+'''0 means the cells where no value is assigned'''
+grid = [[2, 5, 0, 0, 3, 0, 9, 0, 1],
+        [0, 1, 0, 0, 0, 4, 0, 0, 0],
+    [4, 0, 7, 0, 0, 0, 2, 0, 8],
+    [0, 0, 5, 2, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 9, 8, 1, 0, 0],
+    [0, 4, 0, 0, 0, 3, 0, 0, 0],
+    [0, 0, 0, 3, 6, 0, 0, 7, 2],
+    [0, 7, 0, 0, 0, 0, 0, 0, 3],
+    [9, 0, 3, 0, 0, 0, 6, 0, 4]]
+ 
+if (Suduko(grid, 0, 0)):
+    puzzle(grid)
+else:
+    print("Solution does not exist:")
 
-<h3>PEAS DESCRIPTION:</h3>
-<table>
-  <tr>
-    <td><strong>Agent Type</strong></td>
-    <td><strong>Performance</strong></td>
-    <td><strong>Environment</strong></td>
-    <td><strong>Actuators</strong></td>
-    <td><strong>Sensors</strong></td>
-  </tr>
-  <tr>
-    <td><strong>Medicine Prescribing Agent</strong></td>
-    <td><strong>Treating unhealthy, agent movement</strong></td>
-    <td><strong>Rooms, Patient</strong></td>
-    <td><strong>Medicine, Treatment</strong></td>
-    <td><strong>Location, Temperature of patient</strong></td>
-  </tr>
-</table>
+```
+## OUTPUT:
+![image](https://github.com/user-attachments/assets/82c1dfd8-8026-4acf-a859-d13514f8cf94)
 
-<hr>
+## RESULT:
+Thus, a Sudoku solver using the backtracking algorithm is implemented for the given Sudoku puzzle.
 
-<h3>DESIGN STEPS</h3>
-<h3>STEP 1: Identifying the Input:</h3>
-<p>Temperature from patients, Location.</p>
 
-<h3>STEP 2: Identifying the Output:</h3>
-<p>Prescribe medicine if the patient in a random room has a fever.</p>
-
-<h3>STEP 3: Developing the PEAS Description:</h3>
-<p>The PEAS description is developed by defining the performance, environment, actuators, and sensors in an agent.</p>
-
-<h3>STEP 4: Implementing the AI Agent:</h3>
-<p>Treat unhealthy patients in each room and check for unhealthy patients in random rooms.</p>
-
-<h3>STEP 5: Measuring the Performance Parameters:</h3>
-<p>For each treatment, performance is incremented. For each movement, performance is decremented.</p>
-
-<h3>PROGRAM</h3>
-<pre>
-<code>
-import random
-
-class HealthMonitoringAgent:
-    def __init__(self, patient_data):
-        self.patient_data = patient_data
-        self.sensors = None
-        self.actuators = None
-
-    def monitor_health(self):
-        while True:
-            current_health_state = self.sensors.get_health_state()
-            action = self.choose_action(current_health_state)
-            self.actuators.perform_action(action)
-            if action == "No specific action needed":
-                break
-
-    def choose_action(self, current_health_state):
-        # Example: A simple rule-based system for decision-making
-        if current_health_state['heart_rate'] > 120:
-            return "Alert healthcare provider: High heart rate detected"
-        elif current_health_state['blood_pressure'] > 140:
-            return "Alert healthcare provider: High blood pressure detected"
-        elif current_health_state['temperature'] > 38:
-            return "Recommend rest and monitor temperature"
-        else:
-            return "No specific action needed"
-
-class HealthSensors:
-    def get_health_state(self):
-        # Example: Simulate health data retrieval (replace with real data in a practical scenario)
-        return {
-            'heart_rate': random.randint(60, 150),
-            'blood_pressure': random.randint(90, 160),
-            'temperature': random.uniform(36.0, 38.5)
-        }
-
-class HealthActuators:
-    def perform_action(self, action):
-        # Example: Print or log the action (in a real scenario, this might involve more complex actions)
-        print(action)
-
-if __name__ == "__main__":
-    patient_data = {'patient_id': 123, 'name': 'John Doe', 'age': 35}
-    
-    health_sensors = HealthSensors()
-    health_actuators = HealthActuators()
-    
-    health_monitoring_agent = HealthMonitoringAgent(patient_data)
-    health_monitoring_agent.sensors = health_sensors
-    health_monitoring_agent.actuators = health_actuators
-    
-    health_monitoring_agent.monitor_health()
-</code>
-</pre>
